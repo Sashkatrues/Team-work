@@ -1,4 +1,4 @@
-456345;Иванов;Иван;Петрович
-456348;Петров;Петр;Иванович
-456340;Иванова;Мария;Семеновна
-456349;Петрова;Наталья;Егоровна
+456345;Ivanov;Ivan;Petrovich
+456348;Petrov;Petr;Ivanovich
+456340;Ivanova;Maria;Semyonovna
+456349;Petrova;Natalia;Egorovna
