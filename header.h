@@ -8,13 +8,16 @@
 #include <string>
 #include <iomanip>
 
+struct fullStudent {
+
+};
 
 struct Student 
 {
     int32_t id;
     std::string surname;
     std::string name;
-    std::string patronymic;
+    std::string fathername;
 };
 
 
@@ -32,7 +35,7 @@ void CheckOutputFile(std::fstream&);
 
 int32_t CountStudents(std::ifstream&);
 void InputStudents(std::ifstream&, std::string*, int32_t);
-
+void TaskA();
 
 void CreateStudentBinary(std::fstream&, std::string*, int32_t);
 void InputGrades(std::ifstream&, std::string*, int32_t);
