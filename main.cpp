@@ -50,6 +50,7 @@ int main()
         processFile("fullgrades.bin", "average_grades.bin");
         std::string* foolsarray1 = new std::string[size];
         std::ifstream binin("average_grades.bin", std::ios::binary | std::ios::ate);
+        
         CreateArray(binin, foolsarray1, size);
         int32_t foolsize{CountFools(foolsarray1,size)};
         
@@ -57,6 +58,21 @@ int main()
         delete[] foolsarray1;
         CreateListWithFools(foolsarray, foolsize);
         delete[] foolsarray;
+
+        std::string* Students = new std::string[size];
+        std::ifstream binn("fullgrades.bin", std::ios::binary);
+        
+        CreateArray(binn, Students, size);
+        int32_t group_number_to_sort{};
+        std::cout << "Input group number to sort by surnames\n";
+        std::cin >> group_number_to_sort;
+        int32_t groupSize{ CountGroupStudents(Students,size,group_number_to_sort) };
+        std::string* groupArray = CreateGroupArray(Students, size, group_number_to_sort, groupSize);
+        delete[] Students;
+        SortGroupBySurnames(groupArray, groupSize);
+        CreateSortedGroupList(groupArray, groupSize);
+        delete[] groupArray;
+       
     }
     catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
@@ -66,3 +82,4 @@ int main()
     return 0;
 }
 
+   
