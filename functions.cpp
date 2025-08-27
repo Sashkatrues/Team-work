@@ -88,7 +88,7 @@ void CreateGradeBinary(std::fstream& bin, std::string* array, int32_t size)
 
 double calculateAverage(const std::string& line, std::string& name) {
     if (line.empty()) {
-        throw std::runtime_error("Пустая строка");
+        throw std::runtime_error("string is empty");
     }
 
     size_t pos{};
@@ -96,20 +96,20 @@ double calculateAverage(const std::string& line, std::string& name) {
 
     pos = line.find(';', prev);
     if (pos == std::string::npos) {
-        throw std::runtime_error("Неверный формат: нет имени");
+        throw std::runtime_error("mistake with form: don't have name");
     }
     name = line.substr(prev, pos - prev);
     prev = pos + 1;
 
     pos = line.find(';', prev);
     if (pos == std::string::npos) {
-        throw std::runtime_error("Неверный формат: нет группы");
+        throw std::runtime_error("mistake with form: don't have group");
     }
     prev = pos + 1;
 
     pos = line.find(';', prev);
     if (pos == std::string::npos) {
-        throw std::runtime_error("Неверный формат: нет ID");
+        throw std::runtime_error("mistake with form: don't have ID");
     }
     prev = pos + 1;
 
@@ -141,22 +141,22 @@ double calculateAverage(const std::string& line, std::string& name) {
     }
 
     if (count == 0) {
-        throw std::runtime_error("Нет оценок для студента: " + name);
+        throw std::runtime_error(name + "don't have marks");
     }
 
     return sum / count;
 }
 
 // Функция для обработки файлов
-void processFile(const std::string& inputFile, const std::string& outputFile) {
-    std::ifstream fin(inputFile);
+void processFile(const std::string& fullgrades.bin, const std::string& average_grades.bin) {
+    std::ifstream fin(fullgrades.bin);
     if (!fin) {
-        throw std::runtime_error("Ошибка открытия " + inputFile);
+        throw std::runtime_error("input file error\n");
     }
 
-    std::fstream fout(outputFile, std::ios::out | std::ios::binary);
+    std::fstream fout(average_grades.bin, std::ios::out | std::ios::binary);
     if (!fout) {
-        throw std::runtime_error("Ошибка создания " + outputFile);
+        throw std::runtime_error("output file error\n");
     }
 
     std::string line;
@@ -172,10 +172,11 @@ void processFile(const std::string& inputFile, const std::string& outputFile) {
             fout.write(output.c_str(), output.size());
         }
         catch (const std::runtime_error& e) {
-            std::cerr << "Предупреждение: " << e.what() << " (строка пропущена)\n";
+            std::cerr << e.what();
         }
     }
 
     fin.close();
     fout.close();
 }
+
