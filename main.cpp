@@ -54,11 +54,8 @@ int main()
         int32_t foolsize{CountFools(foolsarray1,size)};
         
         std::string* foolsarray = CreateFoolsArray(foolsarray1, size, foolsize);
-        CreateListWithFools(foolsarray, foolsize);
-
-
-
         delete[] foolsarray1;
+        CreateListWithFools(foolsarray, foolsize);
         delete[] foolsarray;
     }
     catch (const std::exception& e) {
@@ -68,3 +65,4 @@ int main()
 
     return 0;
 }
+
