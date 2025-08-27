@@ -21,8 +21,15 @@ void CreateArray(std::ifstream&,std::string*&, int32_t);
 std::string* CreateFoolsArray(std::string*&, int32_t, int32_t);
 int32_t CountFools(std::string*&, int32_t);
 int32_t CountGroupStudents(std::string*&, int32_t, int32_t);
+int32_t CountFoolsInBin(std::ifstream& fin);
+void ExtractNamesAndGroups(const std::string*, int32_t, std::string*&, int32_t*&);
+bool compareIndices(int32_t, int32_t, const int32_t*, const std::string*);
+void myQuickSort(int32_t*, int32_t, int32_t, const int32_t*, const std::string*);
+void SortIndices(int32_t, int32_t*&, const int32_t*, const std::string*);
+void CreateSortedFoolsBin(const std::string*, const int32_t*, int32_t);
 std::string* CreateGroupArray(std::string*&, int32_t, int32_t, int32_t);
 bool СompareBySurname(const std::string&, const std::string&);
 void SortGroupBySurnames(std::string*&, int32_t);
 void CreateSortedGroupList(std::string*&, int32_t);
 #endif
+
