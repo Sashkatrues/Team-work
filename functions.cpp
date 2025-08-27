@@ -181,6 +181,61 @@ void processFile(const std::string& inputFile, const std::string& outputFile) {
     fin.close();
     fout.close();
 }
+void CreateArray(std::ifstream& binin, std::string*& foolsarray, int32_t size) {
+   
+    
+    binin.seekg(0, std::ios::end);
+    int32_t length{ static_cast<int32_t>(binin.tellg())};
+    binin.seekg(0);
+    char* buffer = new char[length];
+    binin.read(buffer, length);
+    std::string content(buffer, length);
+    delete[] buffer;
+    size_t pos{};
+    int32_t index{};
+    while (index < size) {
+        size_t next{ content.find('\n', pos) };
+        if (next == std::string::npos) break;
 
+        foolsarray[index] = content.substr(pos, next - pos);
+        ++index;
+        pos = next + 1;
+    }
+}
 
+int32_t CountFools(std::string*& foolsarray1, int32_t size) {
+    int32_t counter{};
+    size_t pos{};
+    for (int32_t i{}; i < size; ++i) {
+        pos = foolsarray1[i].find_last_of(';');
+        if ( foolsarray1[i][pos+1] < 4+48) {
+            ++counter;
+        }
+    }
+    return counter;
+}
 
+std::string* CreateFoolsArray(std::string*& foolsarray1, int32_t size, int32_t foolsize) {
+   
+    std::string* foolsarray = new std::string[foolsize];
+
+    size_t pos{};
+    int32_t j{  };
+    for (int32_t i{}; i < size; ++i) {
+        pos = foolsarray1[i].find_last_of(';');
+        if (foolsarray1[i][pos+1] < 4+48) {
+            foolsarray[j] = foolsarray1[i];
+            ++j;
+        }
+    }
+
+    return foolsarray;
+}
+void CreateListWithFools(std::string*& foolsarray,int32_t size){ 
+        std::ofstream binout("ListWithFools.bin", std::ios::binary);
+        for (int32_t i{}; i < size; ++i) {
+            binout.write(foolsarray[i].c_str(), foolsarray[i].size());
+            binout.write(" ", 1);
+        }
+        binout.close();
+}
