@@ -240,6 +240,96 @@ void CreateListWithFools(std::string*& foolsarray,int32_t size){
         binout.close();
 }
 
+int32_t CountFoolsInBin(std::ifstream& fin) {
+    fin.clear();
+    fin.seekg(0, std::ios::beg);
+    int32_t count{};
+    char ch;
+    while (fin.read(&ch, 1)) {
+        if (ch == '\n') {
+            ++count;
+        }
+    }
+    if (!fin.eof()) {
+        ++count;
+    }
+    fin.clear();
+    fin.seekg(0, std::ios::beg);
+    return count;
+}
+
+void ExtractNamesAndGroups(const std::string* foolsarray, int32_t size, std::string*& names, int32_t*& groups) {
+    names = new std::string[size];
+    groups = new int32_t[size];
+    for (int32_t i{}; i < size; ++i) {
+        size_t pos = foolsarray[i].find(';');
+        if (pos == std::string::npos) continue;  
+        names[i] = foolsarray[i].substr(0, pos);
+
+        size_t groupStart = pos + 1;
+        size_t groupEnd = foolsarray[i].find(';', groupStart);
+        std::string groupStr = foolsarray[i].substr(groupStart, groupEnd - groupStart);
+        groups[i] = std::stoi(groupStr); 
+    }
+}
+
+bool compareIndices(int32_t a, int32_t b, const int32_t* groups, const std::string* names) {
+    if (groups[a] != groups[b]) {
+        return groups[a] < groups[b];
+    }
+    return names[a] < names[b];
+}
+
+void myQuickSort(int32_t* indices, int32_t low, int32_t high, const int32_t* groups, const std::string* names) {
+    if (low >= high){
+        return;
+    }
+
+    int32_t pivotIndex = low + (high - low) / 2;
+    int32_t pivot = indices[pivotIndex];
+
+    int32_t i = low;
+    int32_t j = high;
+    while (i <= j)
+    {
+        while (compareIndices(indices[i], pivot, groups, names)) {
+            ++i;
+        }
+        
+        while (compareIndices(pivot, indices[j], groups, names)) {
+            --j;
+        }
+
+        if (i <= j) {
+            std::swap(indices[i], indices[j]);
+            ++i;
+            --j;
+        }
+    }
+
+    if (low < j) myQuickSort(indices, low, j, groups, names);
+    if (i < high) myQuickSort(indices, i, high, groups, names);
+}
+
+
+void SortIndices(int32_t size, int32_t*& indices, const int32_t* groups, const std::string* names) {
+    indices = new int32_t[size];
+    for (int32_t i{}; i < size; ++i){
+        indices[i] = i;
+    }
+    myQuickSort(indices, 0, size - 1, groups, names);
+}
+
+void CreateSortedFoolsBin(const std::string* arr, const int32_t* indices, int32_t size) {
+    std::ofstream binout("SortedFools.bin", std::ios::binary);
+    for (int32_t i{}; i < size; ++i) {
+        int32_t idx = indices[i];
+        binout.write(arr[idx].c_str(), arr[idx].size());
+        binout.write("\n", 1);
+    }
+    binout.close();
+}
+
 
 int32_t CountGroupStudents(std::string*& students, int32_t size, int32_t group_num) {
     int32_t counter{};
@@ -287,3 +377,4 @@ void CreateSortedGroupList(std::string*& groupStrings, int32_t groupSize){
     }
     binout.close();
 }
+
