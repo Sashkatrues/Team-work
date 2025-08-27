@@ -17,7 +17,7 @@ void CreateGradeBinary(std::fstream&, std::string*, int32_t);
 double calculateAverage(const std::string&, std::string&, std::string&, std::string&);
 void processFile(const std::string&, const std::string&);
 void CreateListWithFools(std::string*&, int32_t);
-void CreateArray(std::ifstream&,std::string*&, int32_t);
+void CreateArray(std::ifstream&, std::string*&, int32_t);
 std::string* CreateFoolsArray(std::string*&, int32_t, int32_t);
 int32_t CountFools(std::string*&, int32_t);
 int32_t CountGroupStudents(std::string*&, int32_t, int32_t);
@@ -34,6 +34,7 @@ void CreateSortedGroupList(std::string*&, int32_t);
 bool CompareByAverageDescending(const std::string&, const std::string&);
 void SortGroupByAverageDescending(std::string*&, int32_t);
 void CreateSortedGroupAverageList(std::string*&, int32_t);
+std::string* CreateGeniusArray(std::string*&, int32_t, int32_t);
+int32_t CountGenius(std::string*&, int32_t);
+void CreateListWithGenius(std::string*&, int32_t);
 #endif
-
-
