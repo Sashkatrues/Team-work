@@ -86,7 +86,7 @@ void CreateGradeBinary(std::fstream& bin, std::string* array, int32_t size)
 }
 
 
-double calculateAverage(const std::string& line, std::string& name) {
+double calculateAverage(const std::string& line, std::string& name, std::string& group, std::string& id) {
     if (line.empty()) {
         throw std::runtime_error("string is empty");
     }
@@ -105,12 +105,14 @@ double calculateAverage(const std::string& line, std::string& name) {
     if (pos == std::string::npos) {
         throw std::runtime_error("mistake with form: don't have group");
     }
+    group = line.substr(prev, pos - prev);
     prev = pos + 1;
 
     pos = line.find(';', prev);
     if (pos == std::string::npos) {
         throw std::runtime_error("mistake with form: don't have ID");
     }
+    id = line.substr(prev, pos - prev);
     prev = pos + 1;
 
     double sum{};
@@ -162,11 +164,11 @@ void processFile(const std::string& fullgrades.bin, const std::string& average_g
     std::string line;
     while (std::getline(fin, line)) {
         try {
-            std::string name;
-            double average = calculateAverage(line, name);
+            std::string name, group, id;
+            double average = calculateAverage(line, name, group, id);
 
             std::stringstream ss;
-            ss << name << ";" << average << "\n";
+            ss << name << ";" << group << ";" << id << ";" << std::fixed << std::setprecision(2) << average << "\n";
             std::string output = ss.str();
 
             fout.write(output.c_str(), output.size());
@@ -179,4 +181,5 @@ void processFile(const std::string& fullgrades.bin, const std::string& average_g
     fin.close();
     fout.close();
 }
+
 
