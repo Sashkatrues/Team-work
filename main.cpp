@@ -39,7 +39,7 @@ int main()
         for (int32_t i{}; i < size; ++i) {
             bin_gg.write(grades[i].c_str(), grades[i].size());
         }
-        
+
         delete[] students;
         delete[] grades;
         bin_s.close();
@@ -50,32 +50,32 @@ int main()
         processFile("fullgrades.bin", "average_grades.bin");
         std::string* foolsarray1 = new std::string[size];
         std::ifstream binin("average_grades.bin", std::ios::binary | std::ios::ate);
-        
+
         CreateArray(binin, foolsarray1, size);
-        int32_t foolsize{CountFools(foolsarray1,size)};
-        
+        int32_t foolsize{ CountFools(foolsarray1,size) };
+
         std::string* foolsarray = CreateFoolsArray(foolsarray1, size, foolsize);
         delete[] foolsarray1;
         CreateListWithFools(foolsarray, foolsize);
         delete[] foolsarray;
 
         std::ifstream fin("ListWithFools.bin", std::ios::binary);
-        CheckInputFile(fin);  
+        CheckInputFile(fin);
 
-        int32_t count = CountFoolsInBin(fin);  
+        int32_t count = CountFoolsInBin(fin);
         std::string* arrayOfFools = new std::string[count];
-        CreateArray(fin, arrayOfFools, size);  
+        CreateArray(fin, arrayOfFools, size);
 
         std::string* names = nullptr;
         int32_t* groups = nullptr;
-        ExtractNamesAndGroups(arrayOfFools, count, names, groups); 
+        ExtractNamesAndGroups(arrayOfFools, count, names, groups);
 
         int32_t* indices = nullptr;
-        SortIndices(count, indices, groups, names); 
+        SortIndices(count, indices, groups, names);
 
-        CreateSortedFoolsBin(arrayOfFools, indices, count);  
+        CreateSortedFoolsBin(arrayOfFools, indices, count);
 
-   
+
         delete[] arrayOfFools;
         delete[] names;
         delete[] groups;
@@ -112,16 +112,27 @@ int main()
         SortGroupByAverageDescending(groupAvgArray, groupSizeAvg);
         CreateSortedGroupAverageList(groupAvgArray, groupSizeAvg);
         delete[] groupAvgArray;
-       
+
+        std::string* geniusarray1 = new std::string[size];
+        std::ifstream bining("average_grades.bin", std::ios::binary | std::ios::ate);
+        CreateArray(bining, geniusarray1, size);
+        int32_t geniussize{ CountGenius(geniusarray1, size) };
+
+        std::string* geniusarray = CreateGeniusArray(geniusarray1, size, geniussize);
+        delete[] geniusarray1;
+        CreateListWithGenius(geniusarray, geniussize);
+        delete[] geniusarray;
+        bining.close();
+
     }
     catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
         return 1;
     }
 
+
+
+
+
     return 0;
 }
-
-   
-
-
