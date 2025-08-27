@@ -182,10 +182,10 @@ void processFile(const std::string& inputFile, const std::string& outputFile) {
     fout.close();
 }
 void CreateArray(std::ifstream& binin, std::string*& arr, int32_t size) {
-   
-    
+
+
     binin.seekg(0, std::ios::end);
-    int32_t length{ static_cast<int32_t>(binin.tellg())};
+    int32_t length{ static_cast<int32_t>(binin.tellg()) };
     binin.seekg(0);
     char* buffer = new char[length];
     binin.read(buffer, length);
@@ -208,7 +208,7 @@ int32_t CountFools(std::string*& foolsarray1, int32_t size) {
     size_t pos{};
     for (int32_t i{}; i < size; ++i) {
         pos = foolsarray1[i].find_last_of(';');
-        if ( foolsarray1[i][pos+1] < 4+48) {
+        if (foolsarray1[i][pos + 1] < 4 + 48) {
             ++counter;
         }
     }
@@ -216,14 +216,14 @@ int32_t CountFools(std::string*& foolsarray1, int32_t size) {
 }
 
 std::string* CreateFoolsArray(std::string*& foolsarray1, int32_t size, int32_t foolsize) {
-   
+
     std::string* foolsarray = new std::string[foolsize];
 
     size_t pos{};
     int32_t j{  };
     for (int32_t i{}; i < size; ++i) {
         pos = foolsarray1[i].find_last_of(';');
-        if (foolsarray1[i][pos+1] < 4+48) {
+        if (foolsarray1[i][pos + 1] < 4 + 48) {
             foolsarray[j] = foolsarray1[i];
             ++j;
         }
@@ -231,13 +231,13 @@ std::string* CreateFoolsArray(std::string*& foolsarray1, int32_t size, int32_t f
 
     return foolsarray;
 }
-void CreateListWithFools(std::string*& foolsarray,int32_t size){ 
-        std::ofstream binout("ListWithFools.bin", std::ios::binary);
-        for (int32_t i{}; i < size; ++i) {
-            binout.write(foolsarray[i].c_str(), foolsarray[i].size());
-            binout.write("\n", 1);
-        }
-        binout.close();
+void CreateListWithFools(std::string*& foolsarray, int32_t size) {
+    std::ofstream binout("ListWithFools.bin", std::ios::binary);
+    for (int32_t i{}; i < size; ++i) {
+        binout.write(foolsarray[i].c_str(), foolsarray[i].size());
+        binout.write("\n", 1);
+    }
+    binout.close();
 }
 
 int32_t CountFoolsInBin(std::ifstream& fin) {
@@ -263,13 +263,13 @@ void ExtractNamesAndGroups(const std::string* foolsarray, int32_t size, std::str
     groups = new int32_t[size];
     for (int32_t i{}; i < size; ++i) {
         size_t pos = foolsarray[i].find(';');
-        if (pos == std::string::npos) continue;  
+        if (pos == std::string::npos) continue;
         names[i] = foolsarray[i].substr(0, pos);
 
         size_t groupStart = pos + 1;
         size_t groupEnd = foolsarray[i].find(';', groupStart);
         std::string groupStr = foolsarray[i].substr(groupStart, groupEnd - groupStart);
-        groups[i] = std::stoi(groupStr); 
+        groups[i] = std::stoi(groupStr);
     }
 }
 
@@ -281,7 +281,7 @@ bool compareIndices(int32_t a, int32_t b, const int32_t* groups, const std::stri
 }
 
 void myQuickSort(int32_t* indices, int32_t low, int32_t high, const int32_t* groups, const std::string* names) {
-    if (low >= high){
+    if (low >= high) {
         return;
     }
 
@@ -295,7 +295,7 @@ void myQuickSort(int32_t* indices, int32_t low, int32_t high, const int32_t* gro
         while (compareIndices(indices[i], pivot, groups, names)) {
             ++i;
         }
-        
+
         while (compareIndices(pivot, indices[j], groups, names)) {
             --j;
         }
@@ -314,7 +314,7 @@ void myQuickSort(int32_t* indices, int32_t low, int32_t high, const int32_t* gro
 
 void SortIndices(int32_t size, int32_t*& indices, const int32_t* groups, const std::string* names) {
     indices = new int32_t[size];
-    for (int32_t i{}; i < size; ++i){
+    for (int32_t i{}; i < size; ++i) {
         indices[i] = i;
     }
     myQuickSort(indices, 0, size - 1, groups, names);
@@ -336,7 +336,7 @@ int32_t CountGroupStudents(std::string*& students, int32_t size, int32_t group_n
     size_t pos{};
     for (int32_t i{}; i < size; ++i) {
         pos = students[i].find_first_of(';');
-        if (students[i][pos+1] == group_num + 48) {
+        if (students[i][pos + 1] == group_num + 48) {
             ++counter;
         }
     }
@@ -358,18 +358,18 @@ std::string* CreateGroupArray(std::string*& Students, int32_t size, int32_t grou
 }
 
 void SortGroupBySurnames(std::string*& groupStrings, int32_t groupSize) {
-    std::sort(groupStrings, groupStrings+groupSize, СompareBySurname);
+    std::sort(groupStrings, groupStrings + groupSize, СompareBySurname);
 }
 
 bool СompareBySurname(const std::string& a, const std::string& b) {
     size_t posA = a.find(';');
     size_t posB = b.find(';');
-    std::string surnameA =  a.substr(0, posA);
-    std::string surnameB =  b.substr(0, posB);
+    std::string surnameA = a.substr(0, posA);
+    std::string surnameB = b.substr(0, posB);
     return surnameA < surnameB;
 }
 
-void CreateSortedGroupList(std::string*& groupStrings, int32_t groupSize){
+void CreateSortedGroupList(std::string*& groupStrings, int32_t groupSize) {
     std::ofstream binout("SortedGroupList.bin", std::ios::binary);
     for (int32_t i{}; i < groupSize; ++i) {
         binout.write(groupStrings[i].c_str(), groupStrings[i].size());
@@ -411,4 +411,48 @@ void CreateSortedGroupAverageList(std::string*& groupArray, int32_t groupSize) {
     binout.close();
 }
 
+int32_t CountGenius(std::string*& geniusarray1, int32_t size) {
+    int32_t counter{};
+    size_t pos{};
+    for (int32_t i{}; i < size; ++i) {
+        pos = geniusarray1[i].find_last_of(';');
+        if (geniusarray1[i][pos + 1] >= 8 + 48) {
+            ++counter;
+        }
+    }
+    return counter;
+}
 
+std::string* CreateGeniusArray(std::string*& geniusarray1, int32_t size, int32_t geniussize)
+{
+
+    std::string* geniusarray = new std::string[geniussize];
+
+    size_t pos{};
+    int32_t j{  };
+    for (int32_t i{}; i < size; ++i)
+    {
+        pos = geniusarray1[i].find_last_of(';');
+        if (geniusarray1[i][pos + 1] >= 4 + 48)
+        {
+            geniusarray[j] = geniusarray1[i];
+            ++j;
+        }
+        if (j == geniussize)
+        {
+            break;
+        }
+    }
+
+    return geniusarray;
+}
+void CreateListWithGenius(std::string*& geniusarray, int32_t size)
+{
+    std::ofstream binout("ListWithGenius.bin", std::ios::binary);
+    for (int32_t i{}; i < size; ++i)
+    {
+        binout.write(geniusarray[i].c_str(), geniusarray[i].size());
+        binout.write("\n", 1);
+    }
+    binout.close();
+}
