@@ -14,8 +14,10 @@ void InputStudents(std::ifstream&, std::string*, int32_t);
 void CreateStudentBinary(std::fstream&, std::string*, int32_t);
 void InputGrades(std::ifstream&, std::string*, int32_t);
 void CreateGradeBinary(std::fstream&, std::string*, int32_t);
-double calculateAverage(const std::string& line, std::string& name, std::string& group, std::string& id);
+double calculateAverage(const std::string&, std::string&, std::string&, std::string&);
 void processFile(const std::string&, const std::string&);
-
+void CreateListWithFools(std::string*&, int32_t);
+void CreateArray(std::ifstream&,std::string*&, int32_t);
+std::string* CreateFoolsArray(std::string*&, int32_t, int32_t);
+int32_t CountFools(std::string*&, int32_t);
 #endif
-
