@@ -94,6 +94,24 @@ int main()
         SortGroupBySurnames(groupArray, groupSize);
         CreateSortedGroupList(groupArray, groupSize);
         delete[] groupArray;
+
+        std::string* AvgStudents = new std::string[size];
+        std::ifstream avgbin("average_grades.bin", std::ios::binary);
+        CheckInputFile(avgbin);
+        CreateArray(avgbin, AvgStudents, size);
+        avgbin.close();
+
+        int32_t group_number_avg{};
+        std::cout << "Input group number to sort by descending average score\n";
+        std::cin >> group_number_avg;
+
+        int32_t groupSizeAvg{ CountGroupStudents(AvgStudents, size, group_number_avg) };
+        std::string* groupAvgArray = CreateGroupArray(AvgStudents, size, group_number_avg, groupSizeAvg);
+        delete[] AvgStudents;
+
+        SortGroupByAverageDescending(groupAvgArray, groupSizeAvg);
+        CreateSortedGroupAverageList(groupAvgArray, groupSizeAvg);
+        delete[] groupAvgArray;
        
     }
     catch (const std::exception& e) {
@@ -105,4 +123,5 @@ int main()
 }
 
    
+
 
