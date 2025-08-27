@@ -378,3 +378,37 @@ void CreateSortedGroupList(std::string*& groupStrings, int32_t groupSize){
     binout.close();
 }
 
+bool CompareByAverageDescending(const std::string& a, const std::string& b) {
+    size_t posA = a.rfind(';');
+    double avgA = std::stod(a.substr(posA + 1));
+
+    size_t posB = b.rfind(';');
+    double avgB = std::stod(b.substr(posB + 1));
+
+    if (avgA != avgB) {
+        return avgA > avgB;
+    }
+
+    size_t nameEndA = a.find(';');
+    std::string nameA = a.substr(0, nameEndA);
+
+    size_t nameEndB = b.find(';');
+    std::string nameB = b.substr(0, nameEndB);
+
+    return nameA < nameB;
+}
+
+void SortGroupByAverageDescending(std::string*& groupArray, int32_t groupSize) {
+    std::sort(groupArray, groupArray + groupSize, CompareByAverageDescending);
+}
+
+void CreateSortedGroupAverageList(std::string*& groupArray, int32_t groupSize) {
+    std::ofstream binout("SortedGroupAverage.bin", std::ios::binary);
+    for (int32_t i{}; i < groupSize; ++i) {
+        binout.write(groupArray[i].c_str(), groupArray[i].size());
+        binout.write("\n", 1);
+    }
+    binout.close();
+}
+
+
