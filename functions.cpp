@@ -235,7 +235,8 @@ void CreateListWithFools(std::string*& foolsarray,int32_t size){
         std::ofstream binout("ListWithFools.bin", std::ios::binary);
         for (int32_t i{}; i < size; ++i) {
             binout.write(foolsarray[i].c_str(), foolsarray[i].size());
-            binout.write(" ", 1);
+            binout.write("\n", 1);
         }
         binout.close();
 }
+
