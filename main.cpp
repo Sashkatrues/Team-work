@@ -29,9 +29,6 @@ int main()
                 size_t gp2 = grades[j].find(';', gp1 + 1);
 
                 if ((students[i].substr(0, p1) == grades[j].substr(gp1 + 1, gp2 - gp1 - 1))) {
-                    std::cout << i << " " << j << " " << students[i].substr(0, p1);
-                    std::cout << '\n';
-
                     grades[j] = students[i].substr(p1 + 1, p2 - p1 - 1) + ";" + grades[j] + "\n";
                     break;
                 }
@@ -42,26 +39,32 @@ int main()
         for (int32_t i{}; i < size; ++i) {
             bin_gg.write(grades[i].c_str(), grades[i].size());
         }
-
+        
         delete[] students;
         delete[] grades;
         bin_s.close();
         bin_g.close();
         bin_gg.close();
 
-       
-        processFile("fullgrades.bin", "average_grades.bin");
-        std::cout << "Complite.\n";
 
-    }
-    catch (const char* msg) {
-        std::cerr << msg;
+        processFile("fullgrades.bin", "average_grades.bin");
+        std::string* foolsarray1 = new std::string[size];
+        std::ifstream binin("average_grades.bin", std::ios::binary | std::ios::ate);
+        CreateArray(binin, foolsarray1, size);
+        int32_t foolsize{CountFools(foolsarray1,size)};
+        
+        std::string* foolsarray = CreateFoolsArray(foolsarray1, size, foolsize);
+        CreateListWithFools(foolsarray, foolsize);
+
+
+
+        delete[] foolsarray1;
+        delete[] foolsarray;
     }
     catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
         return 1;
     }
 
-	return 0;
+    return 0;
 }
-		
