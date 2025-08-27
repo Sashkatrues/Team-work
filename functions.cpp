@@ -19,7 +19,7 @@ void CheckInputFile(std::ifstream& fin)
 
 void CheckOutputFile(std::fstream& fout)
 {
-  
+
     if (!fout)
     {
         throw "output file error\n";
@@ -57,7 +57,7 @@ void CreateStudentBinary(std::fstream& bin, std::string* array, int32_t size)
 {
     for (int32_t i{}; i < size; ++i)
     {
-        bin.write(array[i].c_str(),  array[i].length());
+        bin.write(array[i].c_str(), array[i].length());
         bin.write(" ", 1);
     }
 }
@@ -86,3 +86,96 @@ void CreateGradeBinary(std::fstream& bin, std::string* array, int32_t size)
 }
 
 
+double calculateAverage(const std::string& line, std::string& name) {
+    if (line.empty()) {
+        throw std::runtime_error("Пустая строка");
+    }
+
+    size_t pos{};
+    size_t prev{};
+
+    pos = line.find(';', prev);
+    if (pos == std::string::npos) {
+        throw std::runtime_error("Неверный формат: нет имени");
+    }
+    name = line.substr(prev, pos - prev);
+    prev = pos + 1;
+
+    pos = line.find(';', prev);
+    if (pos == std::string::npos) {
+        throw std::runtime_error("Неверный формат: нет группы");
+    }
+    prev = pos + 1;
+
+    pos = line.find(';', prev);
+    if (pos == std::string::npos) {
+        throw std::runtime_error("Неверный формат: нет ID");
+    }
+    prev = pos + 1;
+
+    double sum{};
+    int32_t count{};
+    while (prev < line.size()) {
+
+        pos = line.find(';', prev);
+        if (pos == std::string::npos) break;
+        // std::string subject = line.substr(prev, pos - prev);  // Пропускаем, если не нужен
+        prev = pos + 1;
+
+        // Оценка: до следующего ';' или конца
+        pos = line.find(';', prev);
+        std::string grade_str;
+        if (pos == std::string::npos) {
+            grade_str = line.substr(prev);
+            prev = line.size();
+        }
+        else {
+            grade_str = line.substr(prev, pos - prev);
+            prev = pos + 1;
+        }
+
+        int grade = std::stoi(grade_str);
+        sum += grade;
+        ++count;
+
+    }
+
+    if (count == 0) {
+        throw std::runtime_error("Нет оценок для студента: " + name);
+    }
+
+    return sum / count;
+}
+
+// Функция для обработки файлов
+void processFile(const std::string& inputFile, const std::string& outputFile) {
+    std::ifstream fin(inputFile);
+    if (!fin) {
+        throw std::runtime_error("Ошибка открытия " + inputFile);
+    }
+
+    std::fstream fout(outputFile, std::ios::out | std::ios::binary);
+    if (!fout) {
+        throw std::runtime_error("Ошибка создания " + outputFile);
+    }
+
+    std::string line;
+    while (std::getline(fin, line)) {
+        try {
+            std::string name;
+            double average = calculateAverage(line, name);
+
+            std::stringstream ss;
+            ss << name << ";" << average << "\n";
+            std::string output = ss.str();
+
+            fout.write(output.c_str(), output.size());
+        }
+        catch (const std::runtime_error& e) {
+            std::cerr << "Предупреждение: " << e.what() << " (строка пропущена)\n";
+        }
+    }
+
+    fin.close();
+    fout.close();
+}
