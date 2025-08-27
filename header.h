@@ -31,5 +31,9 @@ std::string* CreateGroupArray(std::string*&, int32_t, int32_t, int32_t);
 bool СompareBySurname(const std::string&, const std::string&);
 void SortGroupBySurnames(std::string*&, int32_t);
 void CreateSortedGroupList(std::string*&, int32_t);
+bool CompareByAverageDescending(const std::string&, const std::string&);
+void SortGroupByAverageDescending(std::string*&, int32_t);
+void CreateSortedGroupAverageList(std::string*&, int32_t);
 #endif
+
 
