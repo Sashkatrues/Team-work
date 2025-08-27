@@ -181,7 +181,7 @@ void processFile(const std::string& inputFile, const std::string& outputFile) {
     fin.close();
     fout.close();
 }
-void CreateArray(std::ifstream& binin, std::string*& foolsarray, int32_t size) {
+void CreateArray(std::ifstream& binin, std::string*& arr, int32_t size) {
    
     
     binin.seekg(0, std::ios::end);
@@ -197,7 +197,7 @@ void CreateArray(std::ifstream& binin, std::string*& foolsarray, int32_t size) {
         size_t next{ content.find('\n', pos) };
         if (next == std::string::npos) break;
 
-        foolsarray[index] = content.substr(pos, next - pos);
+        arr[index] = content.substr(pos, next - pos);
         ++index;
         pos = next + 1;
     }
@@ -240,3 +240,50 @@ void CreateListWithFools(std::string*& foolsarray,int32_t size){
         binout.close();
 }
 
+
+int32_t CountGroupStudents(std::string*& students, int32_t size, int32_t group_num) {
+    int32_t counter{};
+    size_t pos{};
+    for (int32_t i{}; i < size; ++i) {
+        pos = students[i].find_first_of(';');
+        if (students[i][pos+1] == group_num + 48) {
+            ++counter;
+        }
+    }
+    return counter;
+}
+
+std::string* CreateGroupArray(std::string*& Students, int32_t size, int32_t group_number, int32_t groupSize) {
+    std::string* groupString = new std::string[groupSize];
+    size_t pos{};
+    int32_t j{};
+    for (int32_t i{}; i < size; ++i) {
+        pos = Students[i].find_first_of(';');
+        if (Students[i][pos + 1] == group_number + 48) {
+            groupString[j] = Students[i];
+            ++j;
+        }
+    }
+    return groupString;
+}
+
+void SortGroupBySurnames(std::string*& groupStrings, int32_t groupSize) {
+    std::sort(groupStrings, groupStrings+groupSize, СompareBySurname);
+}
+
+bool СompareBySurname(const std::string& a, const std::string& b) {
+    size_t posA = a.find(';');
+    size_t posB = b.find(';');
+    std::string surnameA =  a.substr(0, posA);
+    std::string surnameB =  b.substr(0, posB);
+    return surnameA < surnameB;
+}
+
+void CreateSortedGroupList(std::string*& groupStrings, int32_t groupSize){
+    std::ofstream binout("SortedGroupList.bin", std::ios::binary);
+    for (int32_t i{}; i < groupSize; ++i) {
+        binout.write(groupStrings[i].c_str(), groupStrings[i].size());
+        binout.write("\n", 1);
+    }
+    binout.close();
+}
