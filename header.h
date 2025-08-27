@@ -14,7 +14,8 @@ void InputStudents(std::ifstream&, std::string*, int32_t);
 void CreateStudentBinary(std::fstream&, std::string*, int32_t);
 void InputGrades(std::ifstream&, std::string*, int32_t);
 void CreateGradeBinary(std::fstream&, std::string*, int32_t);
-double calculateAverage(const std::string&, std::string&);
+double calculateAverage(const std::string& line, std::string& name, std::string& group, std::string& id);
 void processFile(const std::string&, const std::string&);
 
 #endif
+
