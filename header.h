@@ -7,7 +7,6 @@
 #include <iomanip>
 #include <algorithm>
 
-bool isEqualId(std::string&, std::string&);
 void CheckInputFile(std::ifstream&);
 void CheckOutputFile(std::fstream&);
 int32_t CountStudents(std::ifstream&);
@@ -15,4 +14,7 @@ void InputStudents(std::ifstream&, std::string*, int32_t);
 void CreateStudentBinary(std::fstream&, std::string*, int32_t);
 void InputGrades(std::ifstream&, std::string*, int32_t);
 void CreateGradeBinary(std::fstream&, std::string*, int32_t);
-#endif  
+double calculateAverage(const std::string&, std::string&);
+void processFile(const std::string&, const std::string&);
+
+#endif
