@@ -150,13 +150,13 @@ double calculateAverage(const std::string& line, std::string& name, std::string&
 }
 
 // Функция для обработки файлов
-void processFile(const std::string& fullgrades.bin, const std::string& average_grades.bin) {
-    std::ifstream fin(fullgrades.bin);
+void processFile(const std::string& inputFile, const std::string& outputFile) {
+    std::ifstream fin(inputFile);
     if (!fin) {
         throw std::runtime_error("input file error\n");
     }
 
-    std::fstream fout(average_grades.bin, std::ios::out | std::ios::binary);
+    std::fstream fout(outputFile, std::ios::out | std::ios::binary);
     if (!fout) {
         throw std::runtime_error("output file error\n");
     }
@@ -181,5 +181,6 @@ void processFile(const std::string& fullgrades.bin, const std::string& average_g
     fin.close();
     fout.close();
 }
+
 
 
