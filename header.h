@@ -20,4 +20,9 @@ void CreateListWithFools(std::string*&, int32_t);
 void CreateArray(std::ifstream&,std::string*&, int32_t);
 std::string* CreateFoolsArray(std::string*&, int32_t, int32_t);
 int32_t CountFools(std::string*&, int32_t);
+int32_t CountGroupStudents(std::string*&, int32_t, int32_t);
+std::string* CreateGroupArray(std::string*&, int32_t, int32_t, int32_t);
+bool СompareBySurname(const std::string&, const std::string&);
+void SortGroupBySurnames(std::string*&, int32_t);
+void CreateSortedGroupList(std::string*&, int32_t);
 #endif
