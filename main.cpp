@@ -59,9 +59,31 @@ int main()
         CreateListWithFools(foolsarray, foolsize);
         delete[] foolsarray;
 
+        std::ifstream fin("ListWithFools.bin", std::ios::binary);
+        CheckInputFile(fin);  
+
+        int32_t count = CountFoolsInBin(fin);  
+        std::string* arrayOfFools = new std::string[count];
+        CreateArray(fin, arrayOfFools, size);  
+
+        std::string* names = nullptr;
+        int32_t* groups = nullptr;
+        ExtractNamesAndGroups(arrayOfFools, count, names, groups); 
+
+        int32_t* indices = nullptr;
+        SortIndices(count, indices, groups, names); 
+
+        CreateSortedFoolsBin(arrayOfFools, indices, count);  
+
+   
+        delete[] arrayOfFools;
+        delete[] names;
+        delete[] groups;
+        delete[] indices;
+        fin.close();
+
         std::string* Students = new std::string[size];
         std::ifstream binn("fullgrades.bin", std::ios::binary);
-        
         CreateArray(binn, Students, size);
         int32_t group_number_to_sort{};
         std::cout << "Input group number to sort by surnames\n";
@@ -83,3 +105,4 @@ int main()
 }
 
    
+
