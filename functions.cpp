@@ -29,8 +29,7 @@ void CheckOutputFile(std::fstream& fout)
 
 int32_t CountStudents(std::ifstream& fin)
 {
-    fin.clear();
-    fin.seekg(0, std::ios::beg);
+   
     std::string temp;
     int32_t count{};
     while (getline(fin, temp))
@@ -208,7 +207,7 @@ int32_t CountFools(std::string*& foolsarray1, int32_t size) {
     size_t pos{};
     for (int32_t i{}; i < size; ++i) {
         pos = foolsarray1[i].find_last_of(';');
-        if (foolsarray1[i][pos + 1] < 4 + 48) {
+        if (std::stod(foolsarray1[i].substr(pos + 1, foolsarray1[i].size() - pos - 1)) < 4) {
             ++counter;
         }
     }
@@ -223,7 +222,7 @@ std::string* CreateFoolsArray(std::string*& foolsarray1, int32_t size, int32_t f
     int32_t j{  };
     for (int32_t i{}; i < size; ++i) {
         pos = foolsarray1[i].find_last_of(';');
-        if (foolsarray1[i][pos + 1] < 4 + 48) {
+        if (std::stod(foolsarray1[i].substr(pos + 1,foolsarray[i].size()-pos-1)) < 4) {
             foolsarray[j] = foolsarray1[i];
             ++j;
         }
@@ -318,7 +317,7 @@ int32_t CountGroupStudents(std::string*& students, int32_t size, int32_t group_n
     size_t pos{};
     for (int32_t i{}; i < size; ++i) {
         pos = students[i].find_first_of(';');
-        if (students[i][pos + 1] == group_num + 48) {
+        if (std::stoi(students[i].substr(pos + 1,1)) == group_num ) {
             ++counter;
         }
     }
@@ -331,7 +330,7 @@ std::string* CreateGroupArray(std::string*& Students, int32_t size, int32_t grou
     int32_t j{};
     for (int32_t i{}; i < size; ++i) {
         pos = Students[i].find_first_of(';');
-        if (Students[i][pos + 1] == group_number + 48) {
+        if (std::stoi(Students[i].substr(pos + 1, 1)) == group_number) {
             groupString[j] = Students[i];
             ++j;
         }
@@ -398,7 +397,7 @@ int32_t CountGenius(std::string*& geniusarray1, int32_t size) {
     size_t pos{};
     for (int32_t i{}; i < size; ++i) {
         pos = geniusarray1[i].find_last_of(';');
-        if (geniusarray1[i][pos + 1] >= 8 + 48) {
+        if (std::stod(geniusarray1[i].substr(pos + 1, geniusarray1[i].size() - pos - 1)) >= 8) {
             ++counter;
         }
     }
@@ -415,7 +414,7 @@ std::string* CreateGeniusArray(std::string*& geniusarray1, int32_t size, int32_t
     for (int32_t i{}; i < size; ++i)
     {
         pos = geniusarray1[i].find_last_of(';');
-        if (geniusarray1[i][pos + 1] >= 4 + 48)
+        if (std::stod(geniusarray1[i].substr(pos + 1, geniusarray1[i].size() - pos - 1)) >= 8)
         {
             geniusarray[j] = geniusarray1[i];
             ++j;
@@ -439,3 +438,88 @@ void CreateListWithGenius(std::string*& geniusarray, int32_t size)
     binout.close();
 }
 
+
+void CreateSortedList(const std::string* arr, const int32_t* indices, int32_t size, const std::string& filename) {
+    std::ofstream binout(filename, std::ios::binary);
+    if (!binout) {
+        throw "output file error\n";
+    }
+    for (int32_t i{}; i < size; ++i) {
+        int32_t idx = indices[i];
+        binout.write(arr[idx].c_str(), arr[idx].size());
+        binout.write("\n", 1);
+    }
+    binout.close();
+}
+
+int32_t CountRecordsInBinaryFile(std::ifstream& fin) {
+    fin.clear();
+    fin.seekg(0, std::ios::beg);
+    int32_t count = 0;
+    char c;
+    while (fin.get(c)) {
+        if (c == '\n') {
+            count++;
+        }
+    }
+    fin.clear();
+    fin.seekg(0, std::ios::beg);
+    return count;
+}
+
+void SortFools() {
+    
+    std::ifstream fools_bin("ListWithFools.bin", std::ios::binary);
+    CheckInputFile(fools_bin);
+
+    
+    int32_t foolsize = CountRecordsInBinaryFile(fools_bin);
+
+    std::string* foolsArray = new std::string[foolsize];
+    CreateArray(fools_bin, foolsArray, foolsize);
+    fools_bin.close();
+
+   
+    std::string* fool_names = nullptr;
+    int32_t* fool_groups = nullptr;
+    ExtractNamesAndGroups(foolsArray, foolsize, fool_names, fool_groups);
+
+   
+    int32_t* fool_indices = nullptr;
+    SortIndices(foolsize, fool_indices, fool_groups, fool_names);
+
+    CreateSortedList(foolsArray, fool_indices, foolsize, "SortedFoolsByGroupAndName.bin");
+
+    delete[] foolsArray;
+    delete[] fool_names;
+    delete[] fool_groups;
+    delete[] fool_indices;
+}
+
+void SortGenius() {
+    std::ifstream genius_bin("ListWithGenius.bin", std::ios::binary);
+    CheckInputFile(genius_bin);
+
+   
+    int32_t geniussize = CountRecordsInBinaryFile(genius_bin);
+
+    std::string* geniusArray = new std::string[geniussize];
+    CreateArray(genius_bin, geniusArray, geniussize);
+    genius_bin.close();
+
+    std::string* genius_names = nullptr;
+    int32_t* genius_groups = nullptr;
+    ExtractNamesAndGroups(geniusArray, geniussize, genius_names, genius_groups);
+
+  
+    int32_t* genius_indices = nullptr;
+    SortIndices(geniussize, genius_indices, genius_groups, genius_names);
+
+    
+    CreateSortedList(geniusArray, genius_indices, geniussize, "SortedGeniusByGroupAndName.bin");
+
+    delete[] geniusArray;
+    delete[] genius_names;
+    delete[] genius_groups;
+    delete[] genius_indices;
+}
