@@ -21,7 +21,6 @@ void CreateArray(std::ifstream&, std::string*&, int32_t);
 std::string* CreateFoolsArray(std::string*&, int32_t, int32_t);
 int32_t CountFools(std::string*&, int32_t);
 int32_t CountGroupStudents(std::string*&, int32_t, int32_t);
-int32_t CountFoolsInBin(std::ifstream& fin);
 void ExtractNamesAndGroups(const std::string*, int32_t, std::string*&, int32_t*&);
 bool compareIndices(int32_t, int32_t, const int32_t*, const std::string*);
 void myQuickSort(int32_t*, int32_t, int32_t, const int32_t*, const std::string*);
@@ -38,3 +37,4 @@ std::string* CreateGeniusArray(std::string*&, int32_t, int32_t);
 int32_t CountGenius(std::string*&, int32_t);
 void CreateListWithGenius(std::string*&, int32_t);
 #endif
+
