@@ -240,24 +240,6 @@ void CreateListWithFools(std::string*& foolsarray, int32_t size) {
     binout.close();
 }
 
-int32_t CountFoolsInBin(std::ifstream& fin) {
-    fin.clear();
-    fin.seekg(0, std::ios::beg);
-    int32_t count{};
-    char ch;
-    while (fin.read(&ch, 1)) {
-        if (ch == '\n') {
-            ++count;
-        }
-    }
-    if (!fin.eof()) {
-        ++count;
-    }
-    fin.clear();
-    fin.seekg(0, std::ios::beg);
-    return count;
-}
-
 void ExtractNamesAndGroups(const std::string* foolsarray, int32_t size, std::string*& names, int32_t*& groups) {
     names = new std::string[size];
     groups = new int32_t[size];
@@ -456,3 +438,4 @@ void CreateListWithGenius(std::string*& geniusarray, int32_t size)
     }
     binout.close();
 }
+
