@@ -62,18 +62,17 @@ int main()
         std::ifstream fin("ListWithFools.bin", std::ios::binary);
         CheckInputFile(fin);
 
-        int32_t count = CountFoolsInBin(fin);
-        std::string* arrayOfFools = new std::string[count];
-        CreateArray(fin, arrayOfFools, size);
+        std::string* arrayOfFools = new std::string[foolsize];
+        CreateArray(fin, arrayOfFools, foolsize);
 
         std::string* names = nullptr;
         int32_t* groups = nullptr;
-        ExtractNamesAndGroups(arrayOfFools, count, names, groups);
+        ExtractNamesAndGroups(arrayOfFools, foolsize, names, groups);
 
         int32_t* indices = nullptr;
-        SortIndices(count, indices, groups, names);
+        SortIndices(foolsize, indices, groups, names);
 
-        CreateSortedFoolsBin(arrayOfFools, indices, count);
+        CreateSortedFoolsBin(arrayOfFools, indices, foolsize);
 
 
         delete[] arrayOfFools;
@@ -136,3 +135,4 @@ int main()
 
     return 0;
 }
+
