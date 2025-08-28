@@ -13,6 +13,7 @@ int main()
         std::fstream bin_g("grades.bin", std::ios::out | std::ios::binary);
         CheckOutputFile(bin_g);
         int32_t size{ CountStudents(fin_s) };
+        std::cout << size;
         std::string* students = new std::string[size];
         InputStudents(fin_s, students, size);
         CreateStudentBinary(bin_s, students, size);
@@ -123,6 +124,11 @@ int main()
         delete[] geniusarray;
         bining.close();
 
+
+
+        SortFools();
+        SortGenius();
+
     }
     catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
@@ -135,4 +141,3 @@ int main()
 
     return 0;
 }
-
