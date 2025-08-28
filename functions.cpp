@@ -29,7 +29,7 @@ void CheckOutputFile(std::fstream& fout)
 
 int32_t CountStudents(std::ifstream& fin)
 {
-   
+
     std::string temp;
     int32_t count{};
     while (getline(fin, temp))
@@ -120,10 +120,9 @@ double calculateAverage(const std::string& line, std::string& name, std::string&
 
         pos = line.find(';', prev);
         if (pos == std::string::npos) break;
-        // std::string subject = line.substr(prev, pos - prev);  // Пропускаем, если не нужен
+       
         prev = pos + 1;
 
-        // Оценка: до следующего ';' или конца
         pos = line.find(';', prev);
         std::string grade_str;
         if (pos == std::string::npos) {
@@ -148,7 +147,6 @@ double calculateAverage(const std::string& line, std::string& name, std::string&
     return sum / count;
 }
 
-// Функция для обработки файлов
 void processFile(const std::string& inputFile, const std::string& outputFile) {
     std::ifstream fin(inputFile);
     if (!fin) {
@@ -222,7 +220,7 @@ std::string* CreateFoolsArray(std::string*& foolsarray1, int32_t size, int32_t f
     int32_t j{  };
     for (int32_t i{}; i < size; ++i) {
         pos = foolsarray1[i].find_last_of(';');
-        if (std::stod(foolsarray1[i].substr(pos + 1,foolsarray[i].size()-pos-1)) < 4) {
+        if (std::stod(foolsarray1[i].substr(pos + 1, foolsarray[i].size() - pos - 1)) < 4) {
             foolsarray[j] = foolsarray1[i];
             ++j;
         }
@@ -317,7 +315,7 @@ int32_t CountGroupStudents(std::string*& students, int32_t size, int32_t group_n
     size_t pos{};
     for (int32_t i{}; i < size; ++i) {
         pos = students[i].find_first_of(';');
-        if (std::stoi(students[i].substr(pos + 1,1)) == group_num ) {
+        if (std::stoi(students[i].substr(pos + 1, 1)) == group_num) {
             ++counter;
         }
     }
