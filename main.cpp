@@ -13,7 +13,6 @@ int main()
         std::fstream bin_g("grades.bin", std::ios::out | std::ios::binary);
         CheckOutputFile(bin_g);
         int32_t size{ CountStudents(fin_s) };
-        std::cout << size;
         std::string* students = new std::string[size];
         InputStudents(fin_s, students, size);
         CreateStudentBinary(bin_s, students, size);
@@ -126,8 +125,8 @@ int main()
 
 
 
-        SortFools();
-        SortGenius();
+        SortList("ListWithFools.bin", "SortedFoolsByGroupAndName.txt");
+        SortList("ListWithGenius.txt", "SortedGeniusByGroupAndName.txt");
 
     }
     catch (const std::exception& e) {
