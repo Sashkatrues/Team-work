@@ -39,7 +39,6 @@ int32_t CountGenius(std::string*&, int32_t);
 void CreateListWithGenius(std::string*&, int32_t);
 void CreateSortedList(const std::string*, const int32_t*, int32_t, const std::string&);
 int32_t CountRecordsInBinaryFile(std::ifstream& fin);
-void SortFools();
-void SortGenius();
+void SortList(const char*, const char*);
 #endif
 
