@@ -120,7 +120,7 @@ double calculateAverage(const std::string& line, std::string& name, std::string&
 
         pos = line.find(';', prev);
         if (pos == std::string::npos) break;
-       
+
         prev = pos + 1;
 
         pos = line.find(';', prev);
@@ -465,59 +465,32 @@ int32_t CountRecordsInBinaryFile(std::ifstream& fin) {
     return count;
 }
 
-void SortFools() {
 
-    std::ifstream fools_bin("ListWithFools.bin", std::ios::binary);
-    CheckInputFile(fools_bin);
-
-
-    int32_t foolsize = CountRecordsInBinaryFile(fools_bin);
-
-    std::string* foolsArray = new std::string[foolsize];
-    CreateArray(fools_bin, foolsArray, foolsize);
-    fools_bin.close();
+void SortList(const char* filename1,const char* filename2) {
+    std::ifstream _bin(filename1);
+    CheckInputFile(_bin);
 
 
-    std::string* fool_names = nullptr;
-    int32_t* fool_groups = nullptr;
-    ExtractNamesAndGroups(foolsArray, foolsize, fool_names, fool_groups);
+    int32_t size = CountRecordsInBinaryFile(_bin);
+
+    std::string* Array = new std::string[size];
+    CreateArray(_bin, Array, size);
+    _bin.close();
+
+    std::string* _names = nullptr;
+    int32_t* _groups = nullptr;
+    ExtractNamesAndGroups(Array, size, _names, _groups);
 
 
-    int32_t* fool_indices = nullptr;
-    SortIndices(foolsize, fool_indices, fool_groups, fool_names);
+    int32_t* _indices = nullptr;
+    SortIndices(size, _indices, _groups, _names);
 
-    CreateSortedList(foolsArray, fool_indices, foolsize, "SortedFoolsByGroupAndName.txt");
 
-    delete[] foolsArray;
-    delete[] fool_names;
-    delete[] fool_groups;
-    delete[] fool_indices;
+    CreateSortedList(Array, _indices, size, filename2);
+
+    delete[] Array;
+    delete[] _names;
+    delete[] _groups;
+    delete[] _indices;
 }
 
-void SortGenius() {
-    std::ifstream genius_bin("ListWithGenius.bin", std::ios::binary);
-    CheckInputFile(genius_bin);
-
-
-    int32_t geniussize = CountRecordsInBinaryFile(genius_bin);
-
-    std::string* geniusArray = new std::string[geniussize];
-    CreateArray(genius_bin, geniusArray, geniussize);
-    genius_bin.close();
-
-    std::string* genius_names = nullptr;
-    int32_t* genius_groups = nullptr;
-    ExtractNamesAndGroups(geniusArray, geniussize, genius_names, genius_groups);
-
-
-    int32_t* genius_indices = nullptr;
-    SortIndices(geniussize, genius_indices, genius_groups, genius_names);
-
-
-    CreateSortedList(geniusArray, genius_indices, geniussize, "SortedGeniusByGroupAndName.txt");
-
-    delete[] geniusArray;
-    delete[] genius_names;
-    delete[] genius_groups;
-    delete[] genius_indices;
-}
