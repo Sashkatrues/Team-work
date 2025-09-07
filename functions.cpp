@@ -5,7 +5,7 @@ void CheckInputFile(std::ifstream& fin)
 {
     if (!fin.good())
     {
-        throw "file doesn't exist\n";
+        throw std::runtime_error("File doesn't exist");
     }
     if (!fin)
     {
@@ -22,7 +22,7 @@ void CheckOutputFile(std::fstream& fout)
 
     if (!fout)
     {
-        throw "output file error\n";
+        throw std::runtime_error("Output file error");
     }
 }
 
@@ -52,16 +52,6 @@ void InputStudents(std::ifstream& fin, std::string* array, int32_t size)
 }
 
 
-void CreateStudentBinary(std::fstream& bin, std::string* array, int32_t size)
-{
-    for (int32_t i{}; i < size; ++i)
-    {
-        bin.write(array[i].c_str(), array[i].length());
-        bin.write(" ", 1);
-    }
-}
-
-
 void InputGrades(std::ifstream& fin, std::string* array, int32_t size)
 {
     fin.clear();
@@ -74,16 +64,31 @@ void InputGrades(std::ifstream& fin, std::string* array, int32_t size)
 }
 
 
-void CreateGradeBinary(std::fstream& bin, std::string* array, int32_t size)
+void CreateBinary(std::fstream& bin, std::string* array, int32_t size)
 {
     for (int32_t i{}; i < size; ++i)
     {
         bin.write(array[i].c_str(), array[i].length());
-        bin.write(" ", 1);
+        bin.write("\n", 1);
     }
     bin.close();
 }
 
+void MergeStudentDataWithGrades(std::string* students, std::string* grades, int32_t size) {
+    for (int32_t i{}; i < size; ++i) {
+        size_t p1 = students[i].find(';');
+        size_t p2 = students[i].find(';', p1 + 1);
+        for (int32_t j{}; j < size; ++j) {
+            size_t gp1 = grades[j].find(';');
+            size_t gp2 = grades[j].find(';', gp1 + 1);
+
+            if ((students[i].substr(0, p1) == grades[j].substr(gp1 + 1, gp2 - gp1 - 1))) {
+                grades[j] = students[i].substr(p1 + 1, p2 - p1 - 1) + ";" + grades[j] + "\n";
+                break;
+            }
+        }
+    }
+}
 
 double calculateAverage(const std::string& line, std::string& name, std::string& group, std::string& id) {
     if (line.empty()) {
@@ -134,7 +139,7 @@ double calculateAverage(const std::string& line, std::string& name, std::string&
             prev = pos + 1;
         }
 
-        int grade = std::stoi(grade_str);
+        int32_t grade = std::stoi(grade_str);
         sum += grade;
         ++count;
 
@@ -149,19 +154,17 @@ double calculateAverage(const std::string& line, std::string& name, std::string&
 
 void processFile(const std::string& inputFile, const std::string& outputFile) {
     std::ifstream fin(inputFile);
-    if (!fin) {
-        throw std::runtime_error("input file error\n");
-    }
+    CheckInputFile(fin);
 
     std::fstream fout(outputFile, std::ios::out | std::ios::binary);
-    if (!fout) {
-        throw std::runtime_error("output file error\n");
-    }
+    CheckOutputFile(fout);
 
     std::string line;
     while (std::getline(fin, line)) {
         try {
-            std::string name, group, id;
+            std::string name; 
+            std::string group;
+            std::string id;
             double average = calculateAverage(line, name, group, id);
 
             std::stringstream ss;
@@ -179,7 +182,6 @@ void processFile(const std::string& inputFile, const std::string& outputFile) {
     fout.close();
 }
 void CreateArray(std::ifstream& binin, std::string*& arr, int32_t size) {
-
 
     binin.seekg(0, std::ios::end);
     int32_t length{ static_cast<int32_t>(binin.tellg()) };
@@ -227,14 +229,6 @@ std::string* CreateFoolsArray(std::string*& foolsarray1, int32_t size, int32_t f
     }
 
     return foolsarray;
-}
-void CreateListWithFools(std::string*& foolsarray, int32_t size) {
-    std::ofstream binout("ListWithFools.bin", std::ios::binary);
-    for (int32_t i{}; i < size; ++i) {
-        binout.write(foolsarray[i].c_str(), foolsarray[i].size());
-        binout.write("\n", 1);
-    }
-    binout.close();
 }
 
 void ExtractNamesAndGroups(const std::string* foolsarray, int32_t size, std::string*& names, int32_t*& groups) {
@@ -336,11 +330,11 @@ std::string* CreateGroupArray(std::string*& Students, int32_t size, int32_t grou
     return groupString;
 }
 
-void SortGroupBySurnames(std::string*& groupStrings, int32_t groupSize) {
-    std::sort(groupStrings, groupStrings + groupSize, СompareBySurname);
+void SortGroup(std::string*& groupStrings, int32_t groupSize) {
+    std::sort(groupStrings, groupStrings + groupSize, CompareBySurname);
 }
 
-bool СompareBySurname(const std::string& a, const std::string& b) {
+bool CompareBySurname(const std::string& a, const std::string& b) {
     size_t posA = a.find(';');
     size_t posB = b.find(';');
     std::string surnameA = a.substr(0, posA);
@@ -375,19 +369,6 @@ bool CompareByAverageDescending(const std::string& a, const std::string& b) {
     std::string nameB = b.substr(0, nameEndB);
 
     return nameA < nameB;
-}
-
-void SortGroupByAverageDescending(std::string*& groupArray, int32_t groupSize) {
-    std::sort(groupArray, groupArray + groupSize, CompareByAverageDescending);
-}
-
-void CreateSortedGroupAverageList(std::string*& groupArray, int32_t groupSize) {
-    std::ofstream binout("SortedGroupAverage.bin", std::ios::binary);
-    for (int32_t i{}; i < groupSize; ++i) {
-        binout.write(groupArray[i].c_str(), groupArray[i].size());
-        binout.write("\n", 1);
-    }
-    binout.close();
 }
 
 int32_t CountGenius(std::string*& geniusarray1, int32_t size) {
@@ -425,16 +406,6 @@ std::string* CreateGeniusArray(std::string*& geniusarray1, int32_t size, int32_t
 
     return geniusarray;
 }
-void CreateListWithGenius(std::string*& geniusarray, int32_t size)
-{
-    std::ofstream binout("ListWithGenius.bin", std::ios::binary);
-    for (int32_t i{}; i < size; ++i)
-    {
-        binout.write(geniusarray[i].c_str(), geniusarray[i].size());
-        binout.write("\n", 1);
-    }
-    binout.close();
-}
 
 
 void CreateSortedList(const std::string* arr, const int32_t* indices, int32_t size, const std::string& filename) {
@@ -457,7 +428,7 @@ int32_t CountRecordsInBinaryFile(std::ifstream& fin) {
     char c;
     while (fin.get(c)) {
         if (c == '\n') {
-            count++;
+            ++count;
         }
     }
     fin.clear();
@@ -493,4 +464,3 @@ void SortList(const char* filename1,const char* filename2) {
     delete[] _groups;
     delete[] _indices;
 }
-
