@@ -15,25 +15,12 @@ int main()
         int32_t size{ CountStudents(fin_s) };
         std::string* students = new std::string[size];
         InputStudents(fin_s, students, size);
-        CreateStudentBinary(bin_s, students, size);
+        CreateBinary(bin_s, students, size);
         std::string* grades = new std::string[size];
         InputGrades(fin_g, grades, size);
-        CreateGradeBinary(bin_g, grades, size);
+        CreateBinary(bin_g, grades, size);
+        MergeStudentDataWithGrades(students, grades, size);
 
-
-        for (int32_t i{}; i < size; ++i) {
-            size_t p1 = students[i].find(';');
-            size_t p2 = students[i].find(';', p1 + 1);
-            for (int32_t j{}; j < size; ++j) {
-                size_t gp1 = grades[j].find(';');
-                size_t gp2 = grades[j].find(';', gp1 + 1);
-
-                if ((students[i].substr(0, p1) == grades[j].substr(gp1 + 1, gp2 - gp1 - 1))) {
-                    grades[j] = students[i].substr(p1 + 1, p2 - p1 - 1) + ";" + grades[j] + "\n";
-                    break;
-                }
-            }
-        }
         std::fstream bin_gg("fullgrades.bin", std::ios::out | std::ios::binary);
         CheckOutputFile(bin_gg);
         for (int32_t i{}; i < size; ++i) {
@@ -46,7 +33,6 @@ int main()
         bin_g.close();
         bin_gg.close();
 
-
         processFile("fullgrades.bin", "average_grades.bin");
         std::string* foolsarray1 = new std::string[size];
         std::ifstream binin("average_grades.bin", std::ios::binary | std::ios::ate);
@@ -56,26 +42,24 @@ int main()
 
         std::string* foolsarray = CreateFoolsArray(foolsarray1, size, foolsize);
         delete[] foolsarray1;
-        CreateListWithFools(foolsarray, foolsize);
-        delete[] foolsarray;
+        std::fstream bin_fools("ListWithFools.bin", std::ios::out | std::ios::binary);
+        CreateBinary(bin_fools, foolsarray, foolsize);
+
+        bin_fools.close();
 
         std::ifstream fin("ListWithFools.bin", std::ios::binary);
         CheckInputFile(fin);
 
-        std::string* arrayOfFools = new std::string[foolsize];
-        CreateArray(fin, arrayOfFools, foolsize);
-
         std::string* names = nullptr;
         int32_t* groups = nullptr;
-        ExtractNamesAndGroups(arrayOfFools, foolsize, names, groups);
+        ExtractNamesAndGroups(foolsarray, foolsize, names, groups);
 
         int32_t* indices = nullptr;
         SortIndices(foolsize, indices, groups, names);
 
-        CreateSortedFoolsBin(arrayOfFools, indices, foolsize);
+        CreateSortedFoolsBin(foolsarray, indices, foolsize);
 
-
-        delete[] arrayOfFools;
+        delete[] foolsarray;
         delete[] names;
         delete[] groups;
         delete[] indices;
@@ -90,8 +74,9 @@ int main()
         int32_t groupSize{ CountGroupStudents(Students,size,group_number_to_sort) };
         std::string* groupArray = CreateGroupArray(Students, size, group_number_to_sort, groupSize);
         delete[] Students;
-        SortGroupBySurnames(groupArray, groupSize);
-        CreateSortedGroupList(groupArray, groupSize);
+        SortGroup(groupArray, groupSize);
+        std::fstream binout("SortedGroupList.bin", std::ios::out | std::ios::binary);
+        CreateBinary(binout, groupArray, groupSize);
         delete[] groupArray;
 
         std::string* AvgStudents = new std::string[size];
@@ -108,8 +93,11 @@ int main()
         std::string* groupAvgArray = CreateGroupArray(AvgStudents, size, group_number_avg, groupSizeAvg);
         delete[] AvgStudents;
 
-        SortGroupByAverageDescending(groupAvgArray, groupSizeAvg);
-        CreateSortedGroupAverageList(groupAvgArray, groupSizeAvg);
+        SortGroup(groupAvgArray, groupSizeAvg);
+        std::fstream bin_fout("SortedGroupAverage.bin", std::ios::out | std::ios::binary);
+        CreateBinary(bin_fout, groupAvgArray, groupSizeAvg);
+        bin_fout.close();
+
         delete[] groupAvgArray;
 
         std::string* geniusarray1 = new std::string[size];
@@ -119,14 +107,14 @@ int main()
 
         std::string* geniusarray = CreateGeniusArray(geniusarray1, size, geniussize);
         delete[] geniusarray1;
-        CreateListWithGenius(geniusarray, geniussize);
+        std::fstream bin_out("ListWithGenius.bin", std::ios::out | std::ios::binary);
+        CreateBinary(bin_out, geniusarray, geniussize);
         delete[] geniusarray;
+        bin_out.close();
         bining.close();
 
-
-
         SortList("ListWithFools.bin", "SortedFoolsByGroupAndName.txt");
-        SortList("ListWithGenius.txt", "SortedGeniusByGroupAndName.txt");
+        SortList("ListWithGenius.bin", "SortedGeniusByGroupAndName.txt");
 
     }
     catch (const std::exception& e) {
@@ -134,9 +122,6 @@ int main()
         return 1;
     }
 
-
-
-
-
     return 0;
 }
+
